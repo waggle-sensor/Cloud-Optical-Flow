@@ -1,0 +1,10 @@
+name: "Cloud Optical Flow"
+description: "Using Sky Imager Movies and Optical Flow to determine cloud speed."
+version: "0.1.0"
+source:
+  architectures:
+    - "linux/amd64"
+    - "linux/arm64"
+    - "linux/arm/v7"
+  url: "https://github.com/MattBednar22/Cloud-Optical-Flow"
+  branch: "main"
