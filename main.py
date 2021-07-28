@@ -3,7 +3,12 @@ from queue import Queue
 import numpy as np
 import cv2 as cv
 import time 
-import openpyxl
+import pandas as pd
+import xlsxwriter
+
+workbook = xlsxwriter.Workbook('Velocitydata.xlsx')
+worksheet = workbook.add_worksheet('Sheet 1')
+
 def create_video_capture_queue(device, queue_size=30, fps=None, quiet=False):
     frames = Queue(queue_size)
     
@@ -25,13 +30,20 @@ def create_video_capture_queue(device, queue_size=30, fps=None, quiet=False):
 
     Thread(target=video_capture_worker, daemon=True).start()
     return frames
-cap = cv.VideoCapture(cv.samples.findFile("movieON20191121.mpg"))
+cap = cv.VideoCapture(cv.samples.findFile("MovieOn20191121.mp4"))
 ret, frame1 = cap.read()
 prvs = cv.cvtColor(frame1,cv.COLOR_BGR2GRAY)
 hsv = np.zeros_like(frame1)
 hsv[...,1] = 255
 
-while(1):
+
+df = pd.read_excel ('data.xlsx',sheet_name='Sheet1',header = None)
+height = df
+#print(df)
+i = 1
+row = 0
+col = 0
+while i < 201:
     ret, frame2 = cap.read()
     next = cv.cvtColor(frame2,cv.COLOR_BGR2GRAY)
     flow = cv.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
@@ -51,5 +63,19 @@ while(1):
     #print(f'the velocity vector at pixel (y=10,x=15) is {flow[pixel_x,pixel_y]}')
     prvs = next
     magnitude = np.linalg.norm(flow[pixel_x,pixel_y])
-    print(magnitude)
-quit()
+    print('Magnitude','Height','Velocity')
+    print(magnitude,df.iloc[i].values)
+    worksheet.write(row,col,magnitude)
+    worksheet.write(row,col+1,df.iloc[i].values)
+
+    velocity = ((height.iloc[i].values//(1307.7504)) * magnitude)
+    
+    print('Magnitude','Height','Velocity')
+    #print(magnitude,df.iloc[i].values,velocity)
+    
+    row += 1
+    i += 1
+    
+workbook.close()
+   
+()
