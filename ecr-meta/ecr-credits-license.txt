@@ -1,0 +1,4 @@
+authors: Matthew Bednar
+collaborators: Scott Collis
+funding: This project was funded by the Department of Energy
+license: Python code within github
